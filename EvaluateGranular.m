@@ -9,11 +9,13 @@ function result=EvaluateGranular(trainData,testData,num)
   %根据类获取候选集合
   %%需要推荐的用户
   users=trainData(:,1);
+  result=zeros(length(users),5);
   for i=1:length(users)
       userid=users(i);
       candidateSet=getCandidateSet(userid,matrix,cluster,clusterGene);
-      recItems=recommendation(userid,matrix,candidateSet,num,true);
+      itemsRec=recommendation(userid,matrix,candidateSet,num,true);
       itemsOrg=testData(find(testData==userid),2);
-      Param=EvaluateParam(itemsRec,itemsOrg);
+      result(i,1)=userid;
+      result(i,2:5)=EvaluateParam(itemsRec,itemsOrg);
   end
 end

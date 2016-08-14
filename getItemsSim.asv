@@ -13,7 +13,7 @@ end
 
 function sim=getItemSimilarity(X,Y,itemScore,i,j)
   dot=sum(X.*Y);
-  if dot~=0
+  if dot=0
     sim=1/(1+sqrt(itemScore(i)-2*dot+itemScore(j)));
   else 
     sim=0;

@@ -1,6 +1,6 @@
-recommendations.trainData=matrix;
-recommendations.testData=testData;
-recommendations.func=[IBCFRecommendation,UBCFRecommendation,GranularRecommendation];
+%recommendations.trainData=matrix;
+%recommendations.testData=testData;
+%recommendations.func=[EvaluateIBCF,EvaluateUBCF,EvaluateGranular];
 
 function result=EvaluateRecommendation(recommendations)
   for i=1:length(recommendations.func)
@@ -9,5 +9,5 @@ function result=EvaluateRecommendation(recommendations)
 end
 
 function plotEvaluation(result)
-  
+
 end

@@ -4,6 +4,14 @@
 %1.3 查全率
 
 %采用二位数组,[itemid,itemscore]
+function Param=EvaluateParam(itemsRec,itemsOrg)
+  Param.MAR=EvaluateByMAE(itemsRec,itemsOrg);
+  [P,R,F]=EvaluateByPRF(itemsRec,itemsOrg);
+  Param.P=P;
+  Param.R=R;
+  Param.F=F;
+end
+
 function mae=EvaluateByMAE(itemsRec,itemsOrg)
   mae=0;
   num=0;

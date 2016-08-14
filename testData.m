@@ -9,13 +9,3 @@
       0,0.55,0.54,0.26,0,0,0.36,0,1,0.64;
       0,0.35,0.41,0.7,0,0.37,0.82,0.7,0.64,1
      ];
- flag=1;
- for i=1:size(SIM,1)
-     for j=size(SIM,2)
-         if(SIM(i,j)~=SIM(j,i))
-             flag=0;
-             break;
-         end
-     end
- end
- 

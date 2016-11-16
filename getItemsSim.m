@@ -1,8 +1,8 @@
 function itemSim=getItemsSim(itemMatrix)
-  itemScore=sum(itemMatrix.*itemMatrix,2);
+  itemScore=sum(itemMatrix.*itemMatrix,2);%”–Œ Ã‚
   itemsNum=size(itemMatrix,1);
   itemSim=eye([itemsNum,itemsNum]);
-  for i=1:itemsNum
+  for i=2:itemsNum
     for j=i+1:itemsNum
       sim=getItemSimilarity(itemMatrix(i,:),itemMatrix(j,:),itemScore,i,j);
       itemSim(i,j)=sim;

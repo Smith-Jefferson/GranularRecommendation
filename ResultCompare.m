@@ -1,0 +1,47 @@
+function  ResultCompare
+    load('result.mat');
+   % set1=result{1,1};
+    set2=result{1,2};
+   % set3=result{1,3};
+    set4=result{1,4};
+    socres=[set2(:,2)';set4(:,2)'];
+    socres(socres==0)=6;
+    [value,key]=min(socres);
+    value(value==6)=0;
+    ldx=find(value~=0);
+    maeSet=value(ldx);
+    mae=sum(maeSet)/length(maeSet);
+    figure(5);
+    plot(ldx,maeSet,'g');
+    hold on;
+    ymae=[];
+    ymae(1:length(ldx))=mae;
+    plot(ldx,ymae,'r','Linewidth',1.5);
+    xlabel('”√ªß'); 
+    ylabel('MAE');
+    s1=sprintf('(%f)',mae);
+    text(0,mae,s1);
+    figure(6);
+    hist(key);
+    figure(7);
+    i2=find(key==1);
+    va2=[set2(i2',6)'];
+    plot(i2,va2,'.r');
+    hold on;
+%     i3=find(key==2);
+%     va3=[set3(i3',6)'];
+%     plot(i3,va3,'.b');
+     i4=find(key==2);
+     va4=[set4(i4',6)'];
+     plot(i4,va4,'.g');
+           hold on;
+     j4=find(key~=2);
+     val4=[set4(j4',6)'];
+     plot(j4,val4,'*b');
+    j2=find(key~=1);
+    val2=[set2(j2',6)'];
+     hold on;
+%     figure(7);
+    plot(j2,val2,'*y');
+end
+

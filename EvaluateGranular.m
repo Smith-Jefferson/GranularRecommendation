@@ -1,21 +1,32 @@
-function result=EvaluateGranular(trainData,testData,num)
-  %æ ¼å¼åŒ–æ•°æ®%dataFormat();%ç”¨æˆ·åˆ†ç»„%%1.æž„å»ºç”¨æˆ·åå¥½çŸ©é˜µ%matrix=userPrefrence(data);
-  %%2.ç²—ç³™èšç±»
-  %ç”¨æˆ·ç›¸ä¼¼åº¦
-  SIM  = SIMMatrix(trainData);
-  cluster = RoughCluster( SIM );
-  %%3.ç±»çš„åŸºå› ï¼ˆåå¥½ï¼‰
-  clusterGene=produceClusterGene(cluster,matrix);
-  %æ ¹æ®ç±»èŽ·å–å€™é€‰é›†åˆ
-  %%éœ€è¦æŽ¨èçš„ç”¨æˆ·
+function [result,compare]=EvaluateGranular(trainData,testData,num)
+  %¸ñÊ½»¯dataFormat();%ÓÃ»§·Ö×é%%1.¹¹½¨ÓÃ»§Æ«ºÃ¾ØÕó%matrix=userPrefrence(data);
+  %%2.´Ö²Ú¾ÛÀà
+  %ÓÃ»§ÏàËÆ¾ØÕó 
+  if(exist('Granular_clusterGene.mat','file')>0)
+      load('Granular_SIM.mat');
+      load('Granular_cluster.mat');
+      load('Granular_clusterGene.mat');
+  else
+      SIM  = SIMMatrix(trainData);
+      cluster = RoughCluster( SIM );
+      %%3.ÀàµÄ»ùÒò£¨Æ«ºÃ£©
+      clusterGene=produceClusterGene(cluster,trainData);
+      save  Granular_SIM.mat SIM;
+      save  Granular_cluster.mat cluster;
+      save  Granular_clusterGene.mat clusterGene;
+  end
+  %¸ù¾ÝÀà»ñÈ¡??Ñ¡¼¯ %% 
   users=trainData(:,1);
-  result=zeros(length(users),5);
+  users(1)=[];
+  itemsIndex=trainData(1,:);
+  itemsIndex(1)=[];
+  result=zeros(length(users),6);
   for i=1:length(users)
       userid=users(i);
-      candidateSet=getCandidateSet(userid,matrix,cluster,clusterGene);
-      itemsRec=recommendation(userid,matrix,candidateSet,num,true);
-      itemsOrg=testData(find(testData==userid),2);
-      result(i,1)=userid;
-      result(i,2:5)=EvaluateParam(itemsRec,itemsOrg);
+      [candidateSet,statistic]=getCandidateSet(userid,trainData,cluster,clusterGene);
+      itemsOrg=testData(testData(:,1)==userid,2:size(testData,2));
+      [itemsRec,mae,compare]=recommendation(userid,trainData,candidateSet,num,true,itemsOrg,itemsIndex,statistic);
+      THRESHOLD=getTHRESHOLDFromPreference(getPreference(userid,trainData(2:size(trainData,1),:)));
+      result(i,:)=[userid,mae,EvaluateParam(itemsRec,itemsOrg,THRESHOLD),compare.radio];
   end
 end

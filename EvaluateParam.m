@@ -1,34 +1,24 @@
-%1.matalab 鎺ㄨ崘绯荤粺娴嬭瘯鍑芥暟
+%1.matalab 推荐系统测试函数
 %1.1 MAE
-%1.2 鏌ュ噯鐜?%1.3 鏌ュ叏鐜?
-%閲囩敤浜屼綅鏁扮粍,[itemid,itemscore]
-function Param=EvaluateParam(itemsRec,itemsOrg)
-  MAR=EvaluateByMAE(itemsRec,itemsOrg);
-  [P,R,F]=EvaluateByPRF(itemsRec,itemsOrg);
-  Param=[MAR,P,R,F];
+%1.2 查准%1.3 查全
+%采用二位数组,[itemid,itemscore]
+function Param=EvaluateParam(itemsRec,itemsOrg,THRESHOLD)
+  [P,R,F]=EvaluateByPRF(itemsRec,itemsOrg,THRESHOLD);
+  Param=[P,R,F];
 end
 
-function mae=EvaluateByMAE(itemsRec,itemsOrg)
-  mae=0;
-  num=0;
-  for i=1:size(itemsRec,1)
-    idx=find(itemsOrg(:,1)==itemsRec(i,1));
-    if(~isempty(idx))
-      mae=mae+abs(itemsRec(i,2)-itemsOrg(idx,2));
-      num=num+1;
-    end
-  end
-  if num~=0
-    mae=mae/num;
-  end
-end
-%P: 鍑嗙‘鐜囧畾涔変负绯荤粺鐨勬帹鑽愬垪琛ㄤ腑鐢ㄦ埛鍠滄鐨勪骇鍝佸拰鎵?湁琚帹鑽愪骇鍝佺殑姣旂巼:锛屽噯纭巼琛ㄧず鐢ㄦ埛瀵逛竴涓鎺ㄨ崘浜у搧鎰熷叴瓒ｇ殑鍙兘鎬?%R:鍙洖鐜囧畾涔変负鎺ㄨ崘鍒楄〃涓敤鎴峰枩娆㈢殑浜у搧涓庣郴缁熶腑鐢ㄦ埛鍠滄鐨勬墍鏈変骇鍝佺殑姣旂巼锛屽彫鍥炵巼琛ㄧず涓?釜鐢ㄦ埛鍠滄鐨勪骇鍝佽鎺ㄨ崘鐨勬鐜?%F:涓轰簡鍚屾椂鑰冨療鍑嗙‘鐜囧拰鍙洖鐜?, Pazzan iM 绛夋妸浜岃?缁煎悎鑰冭檻鎻愬嚭浜?F鎸囨爣 銆侳鎸囨爣瀹氫箟涓篎=(2PR)/(P+R)
-function [P,R,F]=EvaluateByPRF(itemsRec,itemsOrg)
+%P: 准确率定义为系统的推荐列表中用户喜欢的产品和被推荐产品的比率:，准确率表示用户对一个被推荐产品感兴趣的可能
+%R:召回率定义为推荐列表中用户喜欢的产品与系统中用户喜欢的所有产品的比率，召回率表示用户喜欢的产品被推荐的概
+%F:为了同时考察准确率和召回, Pazzan iM 等把二综合考虑提出F指标 。F指标定义为F=(2PR)/(P+R)
+function [P,R,F]=EvaluateByPRF(itemsRec,itemsOrg,THRESHOLD)
   num=0;
   F = 0; R = 0; P = 0;
+  %根据阈值刷选掉小于阈值的测试数据，因为低于这个阈值的测试数据不会被推荐
+  itemsOrg(itemsOrg(:,2)<THRESHOLD,:)=[];
+  %计算交集
   for i=1:size(itemsRec,1)
-    idx=find(itemsOrg(:,1)==itemsRec(i,1));
-    if(~ISEMPTY(idx))
+    idx=itemsOrg(:,1)==itemsRec(i,1);
+    if(sum(idx))
       num=num+1;
     end
   end

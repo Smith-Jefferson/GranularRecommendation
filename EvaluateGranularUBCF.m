@@ -27,6 +27,6 @@ function [result,statistic]=EvaluateGranularUBCF(trainData,testData,num,support)
       [itemsRec,mae,compare]=GranularUBCF(userid,userPreferenceItems,RoughData,SIM,num,Apha,numNeighor,itemsOrg);
       THRESHOLD=getTHRESHOLDFromPreference(userPreferenceItems);
       result(i,:)=[userid,mae,EvaluateParam(itemsRec,itemsOrg,THRESHOLD),compare.radio];
-      statistic{i}=compare;
+      statistic(i)=compare;
   end
 end

@@ -34,6 +34,6 @@ function [result,statistics]=EvaluateGranular(trainData,testData,num,afa,beta)
       [itemsRec,mae,compare]=recommendation(userid,trainData,candidateSet,num,true,itemsOrg,itemsIndex,statistic);
       THRESHOLD=getTHRESHOLDFromPreference(getPreference(userid,trainData(2:size(trainData,1),:)));
       result(i,:)=[userid,mae,EvaluateParam(itemsRec,itemsOrg,THRESHOLD),compare.radio];
-      statistics{i}=compare;
+      statistics(i)=compare;
   end
 end

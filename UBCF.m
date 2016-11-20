@@ -1,26 +1,58 @@
-function recommendItems=UBCF(userid,matrix,SIM,num,Apha)
+function [recommendItems,mae,compare]=UBCF(userid,matrix,SIM,num,Apha,numNeighor,testItems)
+  itemIndex=matrix(1,:);
+  itemIndex(1)=[];
+  matrix(1,:)=[];
+  
   items=getPreferenceItems(userid,matrix);
   %根据items获取用户组
-  neighbor=getUsersByUserSim(userid,SIM,Apha);
+  userIndex=find(matrix(:,1)==userid);
+  neighbor=getUsersByUserSim(userIndex,SIM,Apha,numNeighor);
   candidateSet=getCandidateSet(neighbor(:,1),matrix);
-  recItems=calculateScoreByUserSim(candidateSet,neighbor);
-  items=intersect(items,recItems(:,1)');
-  recItems(items',:)=[];
+  [recItems,statistic]=calculateScoreByUserSim(candidateSet,neighbor);
+  recItems=removeBuyed(items,recItems);
+  %计算MAE
+  mae=0;
+  
+  detail=zeros(size(testItems,1),2);
+  %compare.radio=sum(sum(candidateSet)>1)/size(matrix,1);
+  if size(testItems,1)>0
+      count=0;
+      for i=1:size(testItems,1)
+          ind=find(itemIndex==testItems(i,1));
+          if ind~=0  
+             ind=find(recItems(:,1)==ind);
+          end
+          if (ind~=0 & recItems(ind,2)~=0)
+             diff=abs(testItems(i,2)-recItems(ind,2));
+             mae=mae+diff;
+             count=count+1;
+             detail(i,:)=[statistic(ind),diff];
+          end
+      end
+      if count<=0
+          mae=0;
+      else
+          mae=mae/count;
+      end
+  end
+  compare.detail=detail;
+  compare.radio=sum(detail(:,1))/size(detail,1);
+  if num==-1
+      num=length(recItems);
+  end
   recommendItems=recItems(1:num,:);
-  disp(['recommendationItems : ', num2str(recommendItems(:,1)')]);
-  disp(['recommendationScore : ', num2str(recommendItems(:,2)')]);
+  for i=1:num
+      recommendItems(i,1)=itemIndex(recommendItems(i,1));
+  end
+  %disp([num2str(userid),':recommendationItems : ', num2str(recommendItems(:,1)')]);
+  %disp([num2str(userid),':recommendationScore : ', num2str(recommendItems(:,2)')]);
+  %writeRecLog(userid,recommendItems);
 end
 
-function items=getPreferenceItems(userid,matrix)
-    items=getPreference(userid,matrix);
-    items=find(items~=0);
-end
-
-function neighbor=getUsersByUserSim(userid,SIM,Apha)
-  neighbor=SIM(userid,:)>Apha;
-  similarty=SIM(userid,SIM(userid,:)>Apha);
-  neighbor=[find(neighbor==true)',similarty'];
-  neighbor(userid,:)=[];
+function recItems=removeBuyed(buyed,recItems)
+    for i=1:length(buyed)
+        recItems(recItems(:,1)==buyed(i),:)=[];
+    end
 end
 
 function neighbor=getUsersByItems(items,matrix)
@@ -36,11 +68,24 @@ function candidateSet=getCandidateSet(neighbor,matrix)
   candidateSet=matrix(neighbor,:);
 end
 
-function recItems=calculateScoreByUserSim(candidateSet,neighbor)
-  Items=candidateSet.*repmat(neighbor(:,2),1,size(candidateSet,2));
+function [recItems,statistic]=calculateScoreByUserSim(candidateSet,neighbor)
+  neighbormatrix=repmat(neighbor(:,2),1,size(candidateSet,2));
+  Items=candidateSet.*neighbormatrix;
+  neighbormatrix(Items==0)=0;
   Items=sum(Items);
-  Items=Items/sum(neighbor(:,2));
+  Items=Items./sum(neighbormatrix);
+  %如果只有一个邻居推荐该商品，采取的策略是放弃
+  for i=1:size(candidateSet,2)
+      if sum(neighbormatrix(:,i)>0)<=1
+          Items(i)=0;
+      end
+  end
+  %去除NAN
+  Items(isnan(Items))=0;
   [itm,index]=sort(Items,'descend');
   recItems=[index',itm'];
-  recItems(recItems(:,2)==0,:)=[];
+  %recItems(recItems(:,2)==0,:)=[];
+  statistic=sum(neighbormatrix>0)/size(neighbormatrix,1);
+  statistic=statistic(index);
 end
+

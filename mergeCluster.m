@@ -1,12 +1,15 @@
-function [afterMergeCluster]  = mergeCluster( cluster,support )
+function [afterMergeCluster]  = mergeCluster( cluster,beta )
     %构建类的相似矩阵
     clusterSim=zeros(length(cluster),length(cluster));
     afterMergeCluster=cell(size(cluster));
     for i=1:length(cluster)
         current=cluster{i};
         for j=1:length(cluster)
-            clusterSim(i,j)=length(intersect(current,cluster{j}))/max(length(current),length(cluster{j}));
-            if(~isnan(clusterSim(i,j)) && clusterSim(i,j)>=1-support)
+            if i==j
+                continue;
+            end
+            clusterSim(i,j)=1-length(intersect(cluster{i},cluster{j}))/length(cluster{i});
+            if(~isnan(clusterSim(i,j)) && clusterSim(i,j)<beta)
                 current=unique([current,cell2mat(cluster(j))]);
             end
         end

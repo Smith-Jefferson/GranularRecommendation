@@ -20,10 +20,9 @@ function [result]=LevelGranularRec(trainData,testData,num,support)
       userid=users(i);
       itemsOrg=testData(testData(:,1)==userid,2:size(testData,2));
       userPreferenceItems=getPreferenceItems(userid,trainData(2:size(trainData,1),:));
-       [itemsRec2,mae2,compare2]=UBCF(userid,trainData,SIM,-1,Apha,numNeighor,itemsOrg);
-
       [itemsRec1,mae1,compare1]=GranularUBCF(userid,userPreferenceItems,RoughData,SIM,-1,Apha,numNeighor,itemsOrg);
-     [itemsRec,newmae] =rescore(itemsRec1,mae1,compare1,itemsRec2,mae2,compare2,userid,users,itemsOrg);
+      [itemsRec2,mae2,compare2]=UBCF(userid,trainData,SIM,-1,Apha,numNeighor,itemsOrg);
+      [itemsRec,newmae] =rescore(itemsRec1,mae1,compare1,itemsRec2,mae2,compare2,userid,users,itemsOrg);
       THRESHOLD=getTHRESHOLDFromPreference(userPreferenceItems);
       result(i,:)=[userid,newmae,EvaluateParam(itemsRec(1:num,:),itemsOrg,THRESHOLD),mae];
   end

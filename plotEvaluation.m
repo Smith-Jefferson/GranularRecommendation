@@ -7,7 +7,7 @@ function plotEvaluation(result)
         ldx=find(set(:,2)~=0);
         maeSet=set(ldx,2);
         mae=sum(maeSet)/length(maeSet);
-        plot(ldx,maeSet,'g');
+        plot(ldx,maeSet,'.g');
         hold on;
         ymae=[];
         ymae(1:length(ldx))=mae;
@@ -23,10 +23,10 @@ function plotEvaluation(result)
           if i==1
            %subplot(2,2,2); 
            title('使用MAE评价指标评价UBCF算法');
-%       elseif i==3
-%           %subplot('position',[0.2,0.02,0.6,0.45]); 
-%           %subplot(2,2,3);
-%           title('使用MAE评价指标评价Granular算法');
+      elseif i==2
+          %subplot('position',[0.2,0.02,0.6,0.45]); 
+          %subplot(2,2,3);
+          title('使用MAE评价指标评价Granular算法');
       else
           %subplot(2,2,4);
           title('使用MAE评价指标评价GranularUBCF算法');

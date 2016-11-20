@@ -1,14 +1,14 @@
  %导入数据，格式化dataFormat();
 function [ train ,test] = dataFormat(split)
-  split=1-split;
-  data=importdata('ml-100k\train.txt');
-  test=importdata('ml-100k\test.txt');
-  data=[data;test];
-  data=sortrows(data,1);
-  rand('seed',0);
-  r=rand(size(data,1),1);
-  train=data(r>=split,:);
-  test=data(r<split,:);
+  %split=1-split;
+  data=importdata('ml-100k\u2.base');
+  test=importdata('ml-100k\u2.test');
+  %data=[data;test];
+  train=sortrows(data,1);
+%   rand('seed',0);
+%   r=rand(size(data,1),1);
+%   train=data(r>=split,:);
+%   test=data(r<split,:);
   %index = unique(data(:,3));
   %[I N]=hist(data(:,3),index);
   %I=I./max(I);

@@ -4,7 +4,9 @@ function EvaluationTask
   recommendations.trainData=userPrefrence(data);
   recommendations.testData=test;
 %  recommendations.func={'EvaluateIBCF','EvaluateUBCF','EvaluateGranular','EvaluateGranularUBCF'};
-  recommendations.func={'EvaluateUBCF'};
+  recommendations.func={'EvaluateGranular'};
   recommendations.num=10;
+  recommendations.afa=0.7;
+  recommendations.beta=0.1;
   EvaluateRecommendation(recommendations);
 end

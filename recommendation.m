@@ -23,6 +23,8 @@ function [recommendItems,mae,compare]=recommendation(userid,userPreference,candi
          mae=mae+diff;
          count=count+1;
          detail(i,:)=[statistic(ind),diff];
+      else
+         detail(i,:)=[0,NaN];
       end
   end
   if count<=0

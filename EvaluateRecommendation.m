@@ -16,12 +16,12 @@ function EvaluateRecommendation(recommendations)
             compare{i}=c;
             continue;
         case 'EvaluateUBCF'
-            [r,c]=EvaluateUBCF(recommendations.trainData,recommendations.testData,recommendations.num);
+            [r,c]=EvaluateUBCF(recommendations.trainData,recommendations.testData,recommendations.num,recommendations.afa);
             result{i}=r;
             compare{i}=c;
             continue;
         case 'EvaluateGranular'
-            [r,c]=EvaluateGranular(recommendations.trainData,recommendations.testData,recommendations.num);
+            [r,c]=EvaluateGranular(recommendations.trainData,recommendations.testData,recommendations.num,recommendations.afa,recommendations.beta);
             result{i}=r;
             compare{i}=c;
             continue;

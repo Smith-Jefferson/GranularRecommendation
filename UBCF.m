@@ -7,6 +7,12 @@ function [recommendItems,mae,compare]=UBCF(userid,matrix,SIM,num,Apha,numNeighor
   %根据items获取用户组
   userIndex=find(matrix(:,1)==userid);
   neighbor=getUsersByUserSim(userIndex,SIM,Apha,numNeighor);
+  if isempty(neighbor)
+      recommendItems=[];
+      mae=0;
+      compare=cell(1);
+      return;
+  end
   candidateSet=getCandidateSet(neighbor(:,1),matrix);
   [recItems,statistic]=calculateScoreByUserSim(candidateSet,neighbor);
   recItems=removeBuyed(items,recItems);

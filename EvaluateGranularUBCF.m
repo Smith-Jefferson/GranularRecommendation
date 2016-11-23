@@ -2,12 +2,12 @@ function [result,statistic]=EvaluateGranularUBCF(trainData,testData,num,support)
   %格式化dataFormat();%用户分组%%1.构建用户偏好矩阵%matrix=userPrefrence(data);
   %%2.粗糙聚类
   %用户相似矩阵 
-%   if(exist('UBCF_SIM.mat','file')>0)
-%       load('UBCF_SIM.mat');
-%   else
+  if(exist('UBCF_SIM.mat','file')>0)
+      load('UBCF_SIM.mat');
+  else
       SIM = SIMMatrix(trainData);
        save  UBCF_SIM.mat SIM;
-%   end
+  end
 %   
 %   if(exist('Granular_RoughData.mat','file')>0)
 %       load('Granular_RoughData.mat');

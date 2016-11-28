@@ -1,7 +1,7 @@
 function [mae]=RSGUF(trainData,testData,afa,beta)
   %格式化dataFormat();%用户分组%%1.构建用户偏好矩阵%matrix=userPrefrence(data);
   %%2.粗糙聚类
-  %用户相似矩阵 
+  %用户相似矩阵
   if(exist('UBCF_SIM.mat','file')>0)
       load('UBCF_SIM.mat');
   else
@@ -21,7 +21,7 @@ function [mae]=RSGUF(trainData,testData,afa,beta)
           end
       end
   end
-  
+
   users=trainData(:,1);
   users(1)=[];
   itemsIndex=trainData(1,:);
@@ -58,7 +58,7 @@ function [mae]=RSGUF(trainData,testData,afa,beta)
                   end
                   c=clusterSim(i,betaCluster(b));
                   csim=afasim*(1-c);
-                  if isempty(cur)          
+                  if isempty(cur)
                       betaDomain=[betaDomain;[betaClusterUser(j),csim]];
                       betaItems=[betaItems;getPreference(betaClusterUser(j),trainData)];
                   else
@@ -71,14 +71,14 @@ function [mae]=RSGUF(trainData,testData,afa,beta)
           candidate=afaPrefer;
       else
           neigborItems=[neigborItems;betaItems];
-          neigborSims=[neigborSims,betaDomain(:,2)];
+          neigborSims=[neigborSims,betaDomain(:,2)'];
           candidate=caculatePreferWhithItemsAndSims(neigborItems+1,neigborSims);
       end
       [items,index]=sort(candidate,'descend');
       recItems=[index',items'];
       %根据序号找到对应的itemID
       for i=1:length(recItems)
-          recItems(i,1)=itemsIndex(recItems(i,1));  
+          recItems(i,1)=itemsIndex(recItems(i,1));
       end
       %求MAE
       for i=1:size(itemsOrg,1)

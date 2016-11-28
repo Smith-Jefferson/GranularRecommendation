@@ -2,8 +2,8 @@ function RSGUF_Main
   [data,testData]=dataFormat(0.9);
   trainData=userPrefrence(data);
   RSGUF_Magic=[];
-  matlabpool local 2;  
-  parfor i=1:20
+  matlabpool local 3;  
+  parfor i=1:100
       afa=myrandom(0.3,1);
       beta=myrandom(0,0.5);
       mae=RSGUF(trainData,testData,afa,beta);

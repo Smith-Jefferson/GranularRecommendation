@@ -1,8 +1,8 @@
  %导入数据，格式化dataFormat();
 function [ train ,test] = dataFormat(split)
   %split=1-split;
-  data=importdata('ml-100k\u1.base');
-  test=importdata('ml-100k\u1.test');
+  data=importdata('ml-100k\u2.base');
+  test=importdata('ml-100k\u2.test');
   %data=[data;test];
   train=sortrows(data,1);
 %   rand('seed',0);

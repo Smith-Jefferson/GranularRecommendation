@@ -88,6 +88,8 @@ function [recItems,statistic]=calculateScoreByUserSim(candidateSet,neighbor)
   end
   %È¥³ýNAN
   Items(isnan(Items))=0;
+  
+  
   [itm,index]=sort(Items,'descend');
   recItems=[index',itm'];
   %recItems(recItems(:,2)==0,:)=[];

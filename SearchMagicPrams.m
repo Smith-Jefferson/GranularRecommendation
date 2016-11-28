@@ -1,4 +1,36 @@
-function [result,statistics]=EvaluateGranular(trainData,testData,num,afa,beta)
+function SearchMagicPrams  
+  [data,test]=dataFormat(0.9);
+  trainData=userPrefrence(data);
+  testData=test;
+  rst=[];
+  if(exist('UBCF_SIM.mat','file')>0)
+      load('UBCF_SIM.mat');
+  else
+      SIM = SIMMatrix(trainData);
+      save  UBCF_SIM.mat SIM;
+  end
+
+%   matlabpool local 2;  
+%   parfor i=1:2
+      [afa,beta,mae,rmse]=GranularRST(trainData,testData,SIM);
+      rst=[rst; [afa,beta,mae,rmse]];
+%   end
+%   matlabpool close 
+  save searchMagic.mat rst;
+end
+
+function [afa,beta,mae,rmse]=GranularRST(trainData,testData,SIM)
+  afa=myrandom(0.3,1);
+  beta=myrandom(0,0.5);
+  [r,s]=EvaluateGranular(trainData,testData,SIM,10,afa,beta);
+  [ mae,rmse ] = GlobalMAE(s);
+end
+
+function r=myrandom(a,b)
+  r = a + (b-a).*rand(1);
+end
+
+function [result,statistics]=EvaluateGranular(trainData,testData,SIM,num,afa,beta)
   %格式化dataFormat();%用户分组%%1.构建用户偏好矩阵%matrix=userPrefrence(data);
   %%2.粗糙聚类
   %用户相似矩阵 
@@ -7,12 +39,12 @@ function [result,statistics]=EvaluateGranular(trainData,testData,num,afa,beta)
 %       load('Granular_cluster.mat');
 %       load('Granular_clusterGene.mat');
 %   else
-      if(exist('UBCF_SIM.mat','file')>0)
-        SIM=cell2mat(struct2cell(load('UBCF_SIM.mat')));
-      else
-        SIM = SIMMatrix(trainData);
-        save  UBCF_SIM.mat SIM;
-      end
+%       if(exist('UBCF_SIM.mat','file')>0)
+%         SIM=cell2mat(struct2cell(load('UBCF_SIM.mat')));
+%       else
+        
+%         save  UBCF_SIM.mat SIM;
+%       end
       %SIM  = SIMMatrix(trainData);
       cluster = RoughCluster( SIM,afa,beta );
       %%3.类的基因（偏好）
@@ -29,7 +61,7 @@ function [result,statistics]=EvaluateGranular(trainData,testData,num,afa,beta)
   result=zeros(length(users),6);
   for i=1:length(users)
       userid=users(i);
-      [candidateSet,statistic]=getCandidateSetMean(i,trainData,cluster,clusterGene);
+      [candidateSet,statistic]=getCandidateSet(userid,trainData,cluster,clusterGene);
       itemsOrg=testData(testData(:,1)==userid,2:size(testData,2));
       [itemsRec,mae,compare]=recommendation(userid,trainData,candidateSet,num,true,itemsOrg,itemsIndex,statistic);
       THRESHOLD=getTHRESHOLDFromPreference(getPreference(userid,trainData(2:size(trainData,1),:)));

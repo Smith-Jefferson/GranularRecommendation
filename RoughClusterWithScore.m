@@ -14,7 +14,7 @@ function [ NewData ] = RoughClusterWithScore( SIM,trainData,support )
         if isempty(userid)
             continue;
         end
-        neighborItems(:,trainData(userid,2:size(trainData,2))>0)=0;
+        neighborItems(:,trainData(userid,2:size(trainData,2))>0)=0;%我有的评分邻居都令空
         neighbormatrix=repmat(neighborhood(:,2),1,size(neighborItems,2));
         Items=neighborItems.*neighbormatrix;
         neighbormatrix(Items==0)=0;

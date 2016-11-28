@@ -71,7 +71,7 @@ function [mae]=RSGUF(trainData,testData,afa,beta)
           candidate=afaPrefer;
       else
           neigborItems=[neigborItems;betaItems];
-          neigborSims=[neigborSims;betaDomain(:,2)];
+          neigborSims=[neigborSims,betaDomain(:,2)];
           candidate=caculatePreferWhithItemsAndSims(neigborItems+1,neigborSims);
       end
       [items,index]=sort(candidate,'descend');

@@ -1,13 +1,13 @@
 function RSGUF_Main
   [Tdata,TtestData]=dataSplit;
-  data=Tdata.ML_100_10;
-  testData=TtestData.ML_100_10;
+  data=Tdata.ML_100_20;
+  testData=TtestData.ML_100_20;
   trainData=userPrefrence(data);
   RSGUF_Magic=[];
   matlabpool 2;  
-  parfor i=1:80
-      afa=myrandom(0,1);
-      beta=myrandom(0,1);
+  parfor i=1:10
+      afa=myrandom(0.25,1);
+      beta=myrandom(0,0.5);
       mae=RSGUF(trainData,testData,afa,beta);
       maedat=mae(:,3);
       maedat(isnan(maedat))=[];

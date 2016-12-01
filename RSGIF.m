@@ -4,15 +4,18 @@ function result=RSGIF(trainData,testData,afa,beta)
       load('IBCF_itemSim.mat');
   else
       itemMatrix=getItemMatrix(trainData);
-      itemSim=getItemsSimByEuclidean(itemMatrix);
+      itemSim=getItemsSim(itemMatrix);
       save  IBCF_itemMatrix.mat itemMatrix;
       save  IBCF_itemSim.mat itemSim;
   end
   temp=itemSim;
-  itemSim(itemSim<afa)=0;
+  if afa~=0
+    itemSim(itemSim<afa)=0;
+  end
   %相对分类错误率
-  interMatric=zeros(size(itemSim));
-  for i=1:length(itemSim)
+  if beta~=0
+      interMatric=zeros(size(itemSim));
+      for i=1:length(itemSim)
       itemI=find(itemSim(i,:)>0);
       for j=1:length(itemSim)
           if i~=j
@@ -27,9 +30,11 @@ function result=RSGIF(trainData,testData,afa,beta)
               end
           end
       end
+      end
+      interMatric=[];
+      itemSim=temp;
   end
-  interMatric=[];
-  itemSim=temp;
+  temp=[];
   users=trainData(2:size(trainData,1),1)';
   result=[];
   for i=1:length(users)

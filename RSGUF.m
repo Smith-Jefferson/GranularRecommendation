@@ -59,8 +59,11 @@ function [mae]=RSGUF(trainData,testData,afa,beta)
                   c=clusterSim(i,betaCluster(b));
                   csim=afasim*(1-c);
                   if isempty(cur)
-                      betaDomain=[betaDomain;[betaClusterUser(j),csim]];
-                      betaItems=[betaItems;getPreference(betaClusterUser(j),trainData)];
+                      tempPrefer=getPreference(betaClusterUser(j),trainData);
+                      if ~isempty(tempPrefer)
+                          betaDomain=[betaDomain;[betaClusterUser(j),csim]];
+                          betaItems=[betaItems;tempPrefer];
+                      end
                   else
                       betaDomain(cur,2)=(betaDomain(cur,2)+csim)/2;
                   end
@@ -77,9 +80,7 @@ function [mae]=RSGUF(trainData,testData,afa,beta)
       [items,index]=sort(candidate,'descend');
       recItems=[index',items'];
       %根据序号找到对应的itemID
-      for i=1:length(recItems)
-          recItems(i,1)=itemsIndex(recItems(i,1));
-      end
+      recItems(:,1)=matchItemid(recItems(:,1),itemsIndex);
       %求MAE
       for i=1:size(itemsOrg,1)
           ind=find(recItems(:,1)==itemsOrg(i,1));
@@ -94,6 +95,10 @@ function [mae]=RSGUF(trainData,testData,afa,beta)
 end
 
 function prefer=caculatePreferWhithItemsAndSims(items,sims)
+  if length(sims)==1
+      prefer=items;
+      return ;
+  end
   if size(sims,1)~=size(items,1)
       sims=sims';
   end
@@ -121,4 +126,10 @@ function neighborhoods= afaRoughCluster( SIM ,afa)
         neighborhood=getUsersByUserSim(i,SIM,afa,-1);
         neighborhoods{i}=[i,neighborhood(:,1)'];
     end
+end
+
+function ids=matchItemid(ids,Iids)
+  for i=1:length(ids)
+      ids(i)=Iids(ids(i));
+  end
 end

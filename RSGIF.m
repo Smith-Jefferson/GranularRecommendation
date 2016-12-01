@@ -8,7 +8,28 @@ function result=RSGIF(trainData,testData,afa,beta)
       save  IBCF_itemMatrix.mat itemMatrix;
       save  IBCF_itemSim.mat itemSim;
   end
+  temp=itemSim;
   itemSim(itemSim<afa)=0;
+  %相对分类错误率
+  interMatric=zeros(size(itemSim));
+  for i=1:length(itemSim)
+      itemI=find(itemSim(i,:)>0);
+      for j=1:length(itemSim)
+          if i~=j
+              itenJ=find(itemSim(j,:)>0);
+              if interMatric(i,j)==0
+                interMatric(i,j)=length(intersect(itemI,itenJ));
+                interMatric(j,i)=interMatric(i,j);
+              end
+              c=1-interMatric(i,j)/length(itemI);
+              if c>beta && temp(i,j)<afa
+                temp(i,j)=0;
+              end
+          end
+      end
+  end
+  interMatric=[];
+  itemSim=temp;
   users=trainData(2:size(trainData,1),1)';
   result=[];
   for i=1:length(users)

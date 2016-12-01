@@ -1,18 +1,20 @@
 function RSGUF_Main
-  [data,testData]=dataFormat(0.9);
+  [Tdata,TtestData]=dataSplit;
+  data=Tdata.ML_100_10;
+  testData=TtestData.ML_100_10;
   trainData=userPrefrence(data);
   RSGUF_Magic=[];
-  matlabpool local 3;  
-  parfor i=1:100
-      afa=myrandom(0.3,1);
-      beta=myrandom(0,0.5);
+  matlabpool 2;  
+  parfor i=1:80
+      afa=myrandom(0,1);
+      beta=myrandom(0,1);
       mae=RSGUF(trainData,testData,afa,beta);
       maedat=mae(:,3);
       maedat(isnan(maedat))=[];
-      RSGUF_Magic=[RSGUF_Magic;[afa,beta,mean(maedat)]];
-  end
+      RSGUF_Magic=[RSGUF_Magic;[afa,beta,mean(maedat)]]
+   end
   matlabpool close 
-  save RSGUF_Magic.mat RSGUF_Magic;
+ save RSGUF_Magic.mat RSGUF_Magic;
 end
 
 function r=myrandom(a,b)
